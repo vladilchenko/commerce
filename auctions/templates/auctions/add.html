@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<h2>Add Item</h2>
+
+{% if user.is_authenticated %}
+    <form method="post", action="{% url 'add' %}">
+        {% csrf_token %}
+        {{ item_form }}
+        <input type="submit" value="Add Item">
+    </form>
+
+{% else %}
+
+    <h3>Error</h3>
+    <p>You need to Log In first</p>
+
+{% endif %}
+
+{% endblock %}

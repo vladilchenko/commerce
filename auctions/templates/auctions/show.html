@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<h2> {{ item.title }}</h2>
+{% if item.bids.last.price %}
+    <h5>Current Price: {{ item.bids.last.price }}</h5>
+{% else %}
+    <h5>Current Price: {{ item.start_price }}</h5>
+{% endif %}
+<h6>User: {{ item.user.username }}</h6>
+<h6>Started At: {{ item.start_price }}</h6>
+<h6>Category: {{ item.get_category_display }}</h6>
+{% if item.image %}
+    <img src= {{ item.image }} class="item-image" width="20%" height="26%">
+{% endif %}
+<br/><br/>
+<h5>Description</h5>
+<p>{{ item.description }}</p>
+
+{% if user.is_authenticated %}
+    <a href="#">Make a bid</a>
+{% endif %}
+
+
+
+{% endblock %}
