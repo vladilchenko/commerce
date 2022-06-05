@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from decimal import Decimal
 
 from .models import User, Item, Bid, Comment
 from .forms import ItemForm
@@ -87,7 +88,10 @@ def add(request):
 
 def show(request, item_id):
     item = Item.objects.get(pk=item_id)
-    return render(request, "auctions/show.html", {"item": item})
+    min_bid = item.start_price + Decimal(0.5)
+    if item.bids.all():
+        min_bid = item.bids.last().price + Decimal(0.5)
+    return render(request, "auctions/show.html", {"item": item, "min_bid": min_bid})
 
 def watchlist(request):
     if request.method == "GET":
@@ -98,3 +102,18 @@ def watchlist(request):
         item = Item.objects.get(pk=item_id)
         user.watchlist.add(item)
         return render(request, "auctions/watchlist.html")
+
+def bid(request):
+    if request.method == "POST":
+        item_id = request.POST["item_id"]
+        amount = request.POST["amount"]
+
+        item = Item.objects.get(pk=item_id)
+        bid = Bid(
+            item=item,
+            price=amount,
+            user=request.user
+        )
+        bid.save()
+
+        return HttpResponseRedirect(reverse("show", args=[item_id]))

@@ -19,14 +19,21 @@
 <p>{{ item.description }}</p>
 
 {% if user.is_authenticated %}
-    <a href="#">Make a bid</a>
-    <form method="post" action="{% url 'watchlist' %}">
-        {% csrf_token %}
-        <input type="hidden" name="item_id" value="{{ item.pk }}" />
-        <input type="submit" value="Add to Watchlist">
-    </form>
+
+    {% if item not in user.items.all %}
+        <form method="post" action="{% url 'bid' %}">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ item.pk }}" />
+            <input type="number" step=".01" min="{{ min_bid }}" name="amount" />
+            <input type="submit" value="Place a bid !" />
+        </form>
+
+        <form method="post" action="{% url 'watchlist' %}">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ item.pk }}" />
+            <input type="submit" value="Add to Watchlist">
+        </form>
+    {% endif %}
 {% endif %}
-
-
 
 {% endblock %}
