@@ -20,6 +20,11 @@
 
 {% if user.is_authenticated %}
     <a href="#">Make a bid</a>
+    <form method="post" action="{% url 'watchlist' %}">
+        {% csrf_token %}
+        <input type="hidden" name="item_id" value="{{ item.pk }}" />
+        <input type="submit" value="Add to Watchlist">
+    </form>
 {% endif %}
 
 

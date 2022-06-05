@@ -88,3 +88,13 @@ def add(request):
 def show(request, item_id):
     item = Item.objects.get(pk=item_id)
     return render(request, "auctions/show.html", {"item": item})
+
+def watchlist(request):
+    if request.method == "GET":
+        return render(request, "auctions/watchlist.html")
+    elif request.method == "POST":
+        user = request.user
+        item_id = request.POST["item_id"]
+        item = Item.objects.get(pk=item_id)
+        user.watchlist.add(item)
+        return render(request, "auctions/watchlist.html")

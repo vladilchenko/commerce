@@ -1,0 +1,19 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+<ul>
+{% for item in user.watchlist.all %}
+    <li>{{ item.title }}</li>
+{% endfor %}
+</ul>
+
+{% else %}
+    <h3>Not authorized</h3>
+    <p>Please, login first</p>
+
+{% endif %}
+
+{% endblock %}
