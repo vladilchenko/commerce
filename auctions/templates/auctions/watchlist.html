@@ -6,7 +6,7 @@
 
 <ul>
 {% for item in user.watchlist.all %}
-    <li>{{ item.title }}</li>
+    <li><a href="{% url 'show' item.pk %}">{{ item.title }}</a></li>
 {% endfor %}
 </ul>
 

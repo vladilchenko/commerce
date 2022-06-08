@@ -93,6 +93,7 @@ def show(request, item_id):
         min_bid = item.bids.last().price + Decimal(0.5)
     return render(request, "auctions/show.html", {"item": item, "min_bid": min_bid})
 
+
 def watchlist(request):
     if request.method == "GET":
         return render(request, "auctions/watchlist.html")
@@ -100,8 +101,16 @@ def watchlist(request):
         user = request.user
         item_id = request.POST["item_id"]
         item = Item.objects.get(pk=item_id)
-        user.watchlist.add(item)
+        action = request.POST["action"]
+
+        if action == "add":
+            user.watchlist.add(item)
+
+        if action == "remove":
+            user.watchlist.remove(item)
+
         return render(request, "auctions/watchlist.html")
+
 
 def bid(request):
     if request.method == "POST":

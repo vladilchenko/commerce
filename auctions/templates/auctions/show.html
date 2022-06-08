@@ -28,11 +28,21 @@
             <input type="submit" value="Place a bid !" />
         </form>
 
-        <form method="post" action="{% url 'watchlist' %}">
-            {% csrf_token %}
-            <input type="hidden" name="item_id" value="{{ item.pk }}" />
-            <input type="submit" value="Add to Watchlist">
-        </form>
+        {% if item not in user.watchlist.all %}
+            <form method="post" action="{% url 'watchlist' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add">
+                <input type="hidden" name="item_id" value="{{ item.pk }}" />
+                <input type="submit" value="Add to Watchlist">
+            </form>
+        {% else %}
+            <form method="post" action="{% url 'watchlist' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="remove">
+                <input type="hidden" name="item_id" value="{{ item.pk }}" />
+                <input type="submit" value="Remove from Watchlist">
+            </form>
+        {% endif %}
     {% endif %}
 {% endif %}
 
