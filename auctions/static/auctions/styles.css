@@ -1,3 +1,41 @@
-body {
-    padding: 10px;
+html, body {
+    height: 100%;
+    margin: 0;
+}
+.items_row {
+    height: 350px;
+    margin-bottom: 10px;
+}
+
+.item-container {
+    padding: 5px;
+}
+
+.item {
+    padding: 15px;
+    background-color: #d7d9d8;
+    border: 5px, solid, #c8ddd6;
+    border-radius: 4%;
+}
+
+.item-image {
+    height:60%;
+    width: auto;
+    max-width: 100%;
+}
+
+#main {
+    height: 100%;
+}
+
+#main-row {
+    height: 100%;
+}
+
+#sidebar {
+    color: rgb(255, 235, 235);
+}
+
+#content {
+    background-color: white;
 }

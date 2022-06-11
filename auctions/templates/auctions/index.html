@@ -1,25 +1,29 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2 class="display-4">Active Listings</h2>
+    <hr>
 
-    <ul>
-        {% for item in items %}
-        <li>
-            <h3><a href="{% url 'show' item.pk %}">{{ item.title }}</a></h3>
-            {% if item.bids.last.price %}
-                <h5>Current Price: {{ item.bids.last.price }}</h5>
-            {% else %}
-                <h5>Current Price: {{ item.start_price }}</h5>
-            {% endif %}
-            <h6>User: {{ item.user.username }}</h6>
-            <!-- <h6>Started At: {{ item.start_price }}</h6> -->
-            <!-- <h6>Category: {{ item.get_category_display }}</h6> -->
-            {% if item.image %}
-                <img src= {{ item.image }} class="item-image" width="10%" height="16%">
-            {% endif %}
-            <!-- <p>{{ item.description }}</p> -->
-        </li>
+    <div id="items_section">
+        {% for row in items %}
+            <div class="row items_row">
+                {% for item in row %}
+                    <div class="col-sm-4 h-100 item-container">
+                        <div class="item h-100">
+                            <h3><a href="{% url 'show' item.pk %}">{{ item.title }}</a></h3>
+                            {% if item.bids.last.price %}
+                                <h5>Current Price: {{ item.bids.last.price }}</h5>
+                            {% else %}
+                                <h5>Current Price: {{ item.start_price }}</h5>
+                            {% endif %}
+                            <h6>User: {{ item.user.username }}</h6>
+                            {% if item.image %}
+                                <img src= {{ item.image }} class="item-image mx-auto d-block rounded">
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

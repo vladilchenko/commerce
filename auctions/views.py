@@ -14,7 +14,19 @@ from auctions import utils
 def index(request):
     items = Item.objects.all()
 
-    return render(request, "auctions/index.html", { "items": items})
+    item_rows = [[]]
+    counter = 0
+    current_index = 0
+
+    for el in items:
+        item_rows[current_index].append(el)
+        counter += 1
+        if counter == 3:
+            item_rows.append([])
+            current_index += 1
+            counter = 0
+
+    return render(request, "auctions/index.html", { "items": item_rows})
 
 
 def login_view(request):
