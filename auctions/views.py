@@ -8,6 +8,7 @@ from decimal import Decimal
 
 from .models import User, Item, Bid, Comment
 from .forms import ItemForm
+from auctions import utils
 
 
 def index(request):
@@ -150,3 +151,28 @@ def bid(request):
         bid.save()
 
         return HttpResponseRedirect(reverse("show", args=[item_id]))
+
+
+def categories(request):
+    CATEGORIES = [
+        ("book", "Books"),
+        ("video", "Videos"),
+        ("audio", "Audios"),
+        ("img", "Images"),
+        ("other", "Other")
+    ]
+
+    return render(request, "auctions/categories.html", {"categories": CATEGORIES})
+
+
+def category(request, category):
+
+    category_name = utils.get_category(category)
+
+    WRONG_CATEGORY = "Sorry. The category you've provided is not found."
+
+    if category_name:
+        items = Item.objects.filter(category=category)
+        return render(request, "auctions/category.html", {"category": category_name, "items": items, "error": None})
+    else:
+        return render(request, "auctions/category.html", {"category": category, "items": None, "error": WRONG_CATEGORY})
