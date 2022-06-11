@@ -18,30 +18,70 @@
 <h5>Description</h5>
 <p>{{ item.description }}</p>
 
+<h4>Comments:</h4>
+{% for comment in item.comments.all %}
+    <div>
+        <h5>{{ comment.user.username }}</h5>
+        <p>{{ comment.text }}</p>
+    </div>
+
+{% endfor %}
+
 {% if user.is_authenticated %}
 
+    <form method="post" action="{% url 'show' item.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="comment">
+        <textarea name="message" rows="6" cols="80"></textarea>
+        <input type="submit" value="Leave a comment !"/>
+    </form>
+
     {% if item not in user.items.all %}
-        <form method="post" action="{% url 'bid' %}">
-            {% csrf_token %}
-            <input type="hidden" name="item_id" value="{{ item.pk }}" />
-            <input type="number" step=".01" min="{{ min_bid }}" name="amount" />
-            <input type="submit" value="Place a bid !" />
-        </form>
+        {% if item.status != "closed" %}
+            <form method="post" action="{% url 'bid' %}">
+                {% csrf_token %}
+                <input type="hidden" name="item_id" value="{{ item.pk }}" />
+                <input type="number" step=".01" min="{{ min_bid }}" name="amount" />
+                <input type="submit" value="Place a bid !" />
+            </form>
+        {% else %}
+            <h2>Status: Closed</h2>
+            {% if item.bids.last.user == user %}
+                <h2>Congradulations !!! Your've brought this item !</h2>
+            {% endif %}
+        {% endif %}
 
         {% if item not in user.watchlist.all %}
-            <form method="post" action="{% url 'watchlist' %}">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="add">
-                <input type="hidden" name="item_id" value="{{ item.pk }}" />
-                <input type="submit" value="Add to Watchlist">
-            </form>
+            {% if item.status != "closed" %}
+                <form method="post" action="{% url 'watchlist' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add"/>
+                    <input type="hidden" name="item_id" value="{{ item.pk }}" />
+                    <input type="submit" value="Add to Watchlist"/>
+                </form>
+            {% endif %}
         {% else %}
             <form method="post" action="{% url 'watchlist' %}">
                 {% csrf_token %}
-                <input type="hidden" name="action" value="remove">
+                <input type="hidden" name="action" value="remove"/>
                 <input type="hidden" name="item_id" value="{{ item.pk }}" />
-                <input type="submit" value="Remove from Watchlist">
+                <input type="submit" value="Remove from Watchlist"/>
             </form>
+        {% endif %}
+    {% else %}
+        {% if item.status == "open" %}
+            <form method="post" action="{% url 'show' item.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="close"/>
+                <input type="submit" value="Close auction"/>
+            </form>
+        {% else %}
+            <h2>Status: Closed</h2>
+            {% if item.bids.last.price %}
+                <h2>Latest bid: {{ item.bids.last.price }}</h2>
+            {% else %}
+                <h2>Not sold</h2>
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endif %}

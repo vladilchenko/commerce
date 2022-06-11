@@ -87,11 +87,35 @@ def add(request):
         return render(request, "auctions/add.html", {"item_form": form})
 
 def show(request, item_id):
-    item = Item.objects.get(pk=item_id)
-    min_bid = item.start_price + Decimal(0.5)
-    if item.bids.all():
-        min_bid = item.bids.last().price + Decimal(0.5)
-    return render(request, "auctions/show.html", {"item": item, "min_bid": min_bid})
+    if request.method == "GET":
+        item = Item.objects.get(pk=item_id)
+        min_bid = item.start_price + Decimal(0.5)
+        if item.bids.all():
+            min_bid = item.bids.last().price + Decimal(0.5)
+        return render(request, "auctions/show.html", {"item": item, "min_bid": min_bid})
+
+    if request.method == "POST":
+
+        if request.POST["action"] == "close":
+            item = Item.objects.get(pk=item_id)
+            item.status = "closed"
+            item.save()
+        
+            return render(request, "auctions/show.html", {"item": item, "min_bid": None})
+
+        if request.POST["action"] == "comment":
+            comment = Comment(
+                text=request.POST["message"],
+                user=request.user,
+                item=Item.objects.get(pk=item_id)
+            )
+            comment.save()
+
+            item = Item.objects.get(pk=item_id)
+            min_bid = item.start_price + Decimal(0.5)
+            if item.bids.all():
+                min_bid = item.bids.last().price + Decimal(0.5)
+            return render(request, "auctions/show.html", {"item": item, "min_bid": min_bid})
 
 
 def watchlist(request):

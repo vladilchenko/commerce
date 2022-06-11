@@ -22,6 +22,7 @@ class Item(models.Model):
     start_price = models.DecimalField(max_digits=6, decimal_places=2)
     category = models.CharField(max_length=64, choices=CATEGORIES, default="book")
     image = models.CharField(max_length=256, blank=True)
+    status = models.CharField(max_length=6, default="open")
 
     def __str__(self):
         return f"<Item: {self.title}>"
