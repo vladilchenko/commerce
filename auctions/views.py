@@ -96,8 +96,7 @@ def add(request):
             item.save()
             return HttpResponseRedirect(reverse("index"))
     else:
-        form = ItemForm()
-        return render(request, "auctions/add.html", {"item_form": form})
+        return render(request, "auctions/add.html")
 
 def show(request, item_id):
     if request.method == "GET":
@@ -185,6 +184,19 @@ def category(request, category):
 
     if category_name:
         items = Item.objects.filter(category=category)
-        return render(request, "auctions/category.html", {"category": category_name, "items": items, "error": None})
+
+        item_rows = [[]]
+        counter = 0
+        current_index = 0
+
+        for el in items:
+            item_rows[current_index].append(el)
+            counter += 1
+            if counter == 3:
+                item_rows.append([])
+                current_index += 1
+                counter = 0
+
+        return render(request, "auctions/category.html", {"category": category_name, "items": item_rows, "error": None})
     else:
         return render(request, "auctions/category.html", {"category": category, "items": None, "error": WRONG_CATEGORY})

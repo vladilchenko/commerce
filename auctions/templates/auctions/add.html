@@ -2,12 +2,35 @@
 
 {% block body %}
 
-<h2>Add Item</h2>
+<h2 class="display-4">Add Item</h2>
+<hr>
 
 {% if user.is_authenticated %}
     <form method="post", action="{% url 'add' %}">
         {% csrf_token %}
-        {{ item_form }}
+    
+        <label for="id_title" class="fs-3">Title:</label>
+        <input type="text" class="form-control" name="title" maxlength="64" required="" id="id_title">
+
+        <label for="id_description" class="fs-3">Description:</label>
+        <input type="text" class="form-control" name="description" maxlength="256" required="" id="id_description">
+        <br>
+        <label for="id_start_price" class="fs-3">Start price:</label>
+        <input type="number" name="start_price" step="0.01" required="" id="id_start_price">
+        <br>
+          
+        <label for="id_category" class="fs-3">Category:</label>
+        <select name="category" class="form-select" id="id_category">
+            <option value="book" selected="">Books</option>
+            <option value="video">Videos</option>
+            <option value="audio">Audios</option>
+            <option value="img">Images</option>
+            <option value="other">Other</option>
+        </select>
+  
+        <label for="id_image" class="fs-3">Image:</label>
+        <input type="text" name="image" maxlength="256" id="id_image">
+
         <input type="submit" value="Add Item">
     </form>
 
